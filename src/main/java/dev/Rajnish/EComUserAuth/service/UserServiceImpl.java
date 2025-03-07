@@ -8,8 +8,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dev.Rajnish.EComUserAuth.dto.LoginRequestDTO;
-import dev.Rajnish.EComUserAuth.dto.SignUpRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.UserResponseDTO;
 import dev.Rajnish.EComUserAuth.entity.Role;
 import dev.Rajnish.EComUserAuth.entity.User;
@@ -38,18 +36,6 @@ public class UserServiceImpl implements UserService {
         User savedUser = userOptional.get();
         
         return UserResponseDTO.createUserResponseDTO(savedUser);
-    }
-
-    @Override
-    public Boolean signUp(SignUpRequestDTO signUpRequestDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'signUp'");
-    }
-
-    @Override
-    public UserResponseDTO login(LoginRequestDTO loginRequestDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'login'");
     }
 
     @Override
