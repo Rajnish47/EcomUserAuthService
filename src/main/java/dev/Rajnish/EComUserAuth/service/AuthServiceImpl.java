@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMapAdapter;
 
@@ -30,8 +31,8 @@ public class AuthServiceImpl implements AuthService{
     private SessionRepository sessionRepository;
     @Autowired
     private UserRepository userRepository;
-    // @Autowired
-    // private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public ResponseEntity<UserResponseDTO> login(LoginRequestDTO loginRequestDTO) {
@@ -43,7 +44,7 @@ public class AuthServiceImpl implements AuthService{
         }
 
         User savedUser = userOptional.get();
-        if(!savedUser.getPassword().equals(loginRequestDTO.getPassword()))
+        if(bCryptPasswordEncoder.matches(loginRequestDTO.getPassword(), savedUser.getPassword()))
         {
             throw new UserNotFoundException("Invalid User Data");
         }
@@ -69,7 +70,7 @@ public class AuthServiceImpl implements AuthService{
     public Boolean signUp(SignUpRequestDTO signUpRequestDTO) {
 
         User user = SignUpRequestDTO.createUser(signUpRequestDTO);
-        user.setPassword(signUpRequestDTO.getPassword());
+        user.setPassword(bCryptPasswordEncoder.encode(signUpRequestDTO.getPassword()));
         User savedUser = userRepository.save(user);
 
         if(savedUser==null)
