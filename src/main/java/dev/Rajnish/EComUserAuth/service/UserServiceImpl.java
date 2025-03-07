@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import dev.Rajnish.EComUserAuth.dto.LoginRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.SignUpRequestDTO;
@@ -17,6 +18,7 @@ import dev.Rajnish.EComUserAuth.repository.RoleRepository;
 import dev.Rajnish.EComUserAuth.repository.UserRepository;
 import dev.Rajnish.EComUserAuth.service.interfaces.UserService;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     @Autowired

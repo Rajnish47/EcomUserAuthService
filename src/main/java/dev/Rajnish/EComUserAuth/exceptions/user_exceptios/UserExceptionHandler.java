@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import dev.Rajnish.EComUserAuth.controller.UserController;
-import dev.Rajnish.EComUserAuth.entity.ExceptionResponseDTO;
+import dev.Rajnish.EComUserAuth.dto.ExceptionResponseDTO;
 
 @ControllerAdvice(basePackageClasses = UserController.class)
 public class UserExceptionHandler {

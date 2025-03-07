@@ -1,9 +1,9 @@
 package dev.Rajnish.EComUserAuth.service.interfaces;
 
-import dev.Rajnish.EComUserAuth.entity.Role;
+import dev.Rajnish.EComUserAuth.dto.RoleResponseDTO;
 
 public interface RoleService {
 
-    Role createRole(String name);
+    RoleResponseDTO createRole(String name);
     
 }

@@ -1,4 +1,4 @@
-package dev.Rajnish.EComUserAuth.entity;
+package dev.Rajnish.EComUserAuth.dto;
 
 import lombok.Getter;
 import lombok.Setter;
