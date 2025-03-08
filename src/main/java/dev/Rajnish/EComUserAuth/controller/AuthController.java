@@ -1,11 +1,13 @@
 package dev.Rajnish.EComUserAuth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +15,7 @@ import dev.Rajnish.EComUserAuth.dto.LoginRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.LogoutRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.SignUpRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.UserResponseDTO;
+import dev.Rajnish.EComUserAuth.dto.ValidateTokenRequestDTO;
 import dev.Rajnish.EComUserAuth.service.interfaces.AuthService;
 
 @RestController
@@ -34,7 +37,7 @@ public class AuthController {
         return new ResponseEntity<>("Account created successfully",HttpStatus.OK);
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<UserResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO)
     {
         return authService.login(loginRequestDTO);
@@ -45,5 +48,12 @@ public class AuthController {
     {
         authService.logout(logoutRequestDTO.getUserId(), logoutRequestDTO.getToken());
         return new ResponseEntity<>("Logged out successfully",HttpStatus.OK);
-    }    
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<String> validate(@RequestHeader("Authorization") String token, @RequestBody ValidateTokenRequestDTO validateTokenRequestDTO)
+    {
+        authService.validate(token,validateTokenRequestDTO);
+        return ResponseEntity.ok("Active");
+    }
 }

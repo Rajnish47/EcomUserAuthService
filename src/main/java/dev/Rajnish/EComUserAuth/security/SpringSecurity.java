@@ -9,6 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SpringSecurity {
 
+    @Bean
     public SecurityFilterChain filteringCriteria(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable();
         httpSecurity.cors().disable();

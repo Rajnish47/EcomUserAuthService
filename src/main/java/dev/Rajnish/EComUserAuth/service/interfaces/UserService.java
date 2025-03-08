@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import dev.Rajnish.EComUserAuth.dto.UserResponseDTO;
-import dev.Rajnish.EComUserAuth.exceptions.user_exceptios.UserNotFoundException;
+import dev.Rajnish.EComUserAuth.exceptions.UserNotFoundException;
 
 public interface UserService {
 

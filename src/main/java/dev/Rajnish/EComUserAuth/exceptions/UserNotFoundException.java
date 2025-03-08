@@ -1,4 +1,4 @@
-package dev.Rajnish.EComUserAuth.exceptions.user_exceptios;
+package dev.Rajnish.EComUserAuth.exceptions;
 
 public class UserNotFoundException extends RuntimeException{
 

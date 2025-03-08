@@ -1,4 +1,4 @@
-package dev.Rajnish.EComUserAuth.exceptions.user_exceptios;
+package dev.Rajnish.EComUserAuth.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

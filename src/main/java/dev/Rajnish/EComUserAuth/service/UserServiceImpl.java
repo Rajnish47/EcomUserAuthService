@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import dev.Rajnish.EComUserAuth.dto.UserResponseDTO;
 import dev.Rajnish.EComUserAuth.entity.Role;
 import dev.Rajnish.EComUserAuth.entity.User;
-import dev.Rajnish.EComUserAuth.exceptions.user_exceptios.UserNotFoundException;
+import dev.Rajnish.EComUserAuth.exceptions.UserNotFoundException;
 import dev.Rajnish.EComUserAuth.repository.RoleRepository;
 import dev.Rajnish.EComUserAuth.repository.UserRepository;
 import dev.Rajnish.EComUserAuth.service.interfaces.UserService;
