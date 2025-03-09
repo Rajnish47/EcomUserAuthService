@@ -53,7 +53,7 @@ public class AuthController {
     @GetMapping("/validate")
     public ResponseEntity<String> validate(@RequestHeader("Authorization") String token, @RequestBody ValidateTokenRequestDTO validateTokenRequestDTO)
     {
-        authService.validate(token,validateTokenRequestDTO);
-        return ResponseEntity.ok("Active");
+        boolean op = authService.validate(token,validateTokenRequestDTO);
+        return ResponseEntity.ok("");
     }
 }

@@ -22,5 +22,13 @@ public class RoleServiceImpl implements RoleService {
         Role savedRole = roleRepository.save(role);
 
         return RoleResponseDTO.createRoleResponseDTO(savedRole);
-    }    
+    }
+
+    @Override
+    public Role fetchByName(String roleName) {
+
+        Role savedRole = roleRepository.fecthByRole(roleName);
+        return savedRole;
+    }
+    
 }

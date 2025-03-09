@@ -3,9 +3,11 @@ package dev.Rajnish.EComUserAuth.service;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.crypto.SecretKey;
@@ -24,6 +26,7 @@ import dev.Rajnish.EComUserAuth.dto.LoginRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.SignUpRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.UserResponseDTO;
 import dev.Rajnish.EComUserAuth.dto.ValidateTokenRequestDTO;
+import dev.Rajnish.EComUserAuth.entity.Role;
 import dev.Rajnish.EComUserAuth.entity.Session;
 import dev.Rajnish.EComUserAuth.entity.SessionStatus;
 import dev.Rajnish.EComUserAuth.entity.User;
@@ -32,6 +35,7 @@ import dev.Rajnish.EComUserAuth.exceptions.UserNotFoundException;
 import dev.Rajnish.EComUserAuth.repository.SessionRepository;
 import dev.Rajnish.EComUserAuth.repository.UserRepository;
 import dev.Rajnish.EComUserAuth.service.interfaces.AuthService;
+import dev.Rajnish.EComUserAuth.service.interfaces.RoleService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -48,6 +52,8 @@ public class AuthServiceImpl implements AuthService{
     private UserRepository userRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private RoleService roleservice;
 
       private static final String SECRET = "31ab4082a1fe8c1423395e658176fb45cdf7f697017fb739b6cca33c40d6045e";
    private static final SecretKey SIGNING_KEY = Keys.hmacShaKeyFor(SECRET.getBytes()); 
@@ -114,6 +120,9 @@ public class AuthServiceImpl implements AuthService{
 
         User user = SignUpRequestDTO.createUser(signUpRequestDTO);
         user.setPassword(bCryptPasswordEncoder.encode(signUpRequestDTO.getPassword()));
+        Set<Role> userRoles = new HashSet<>();
+        Role savedRole = roleservice.fetchByName("User");
+        userRoles.add(savedRole);
         User savedUser = userRepository.save(user);
 
         if(savedUser==null)
@@ -143,9 +152,10 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public SessionStatus validate(String token,ValidateTokenRequestDTO validateTokenRequestDTO) throws InvalidTokenException {
+    public boolean validate(String token,ValidateTokenRequestDTO validateTokenRequestDTO) throws InvalidTokenException {
 
-        //TODO: check for token expiry
+        //TODO: 1. Check role and return true or false depending upon if role is available or not
+        //TODO: 2. check for token expiry
 
         Claims claim = Jwts.parser().verifyWith(SIGNING_KEY).build().parseSignedClaims(token).getPayload();
         if(claim.isEmpty())
@@ -160,6 +170,9 @@ public class AuthServiceImpl implements AuthService{
             throw new InvalidTokenException("token is invalid");
         }
 
-        return SessionStatus.ACTIVE;
+        String userRoles = claim.get("userRoles").toString();
+        System.out.println(userRoles);
+
+        return true;
     }    
 }

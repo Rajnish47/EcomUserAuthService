@@ -12,5 +12,6 @@ import dev.Rajnish.EComUserAuth.entity.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role,UUID> {
 
-    Set<Role> findAllByIdIn(List<UUID> roleIds);    
+    Set<Role> findAllByIdIn(List<UUID> roleIds);
+    Role fecthByRole(String role);
 }
