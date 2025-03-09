@@ -18,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMapAdapter;
 
+import dev.Rajnish.EComUserAuth.client.ProductServiceClient;
+import dev.Rajnish.EComUserAuth.dto.CreateCartRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.LoginRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.SignUpRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.UserResponseDTO;
@@ -38,6 +40,8 @@ import io.jsonwebtoken.security.MacAlgorithm;
 @Service
 public class AuthServiceImpl implements AuthService{
 
+    @Autowired
+    private ProductServiceClient productServiceClient;
     @Autowired
     private SessionRepository sessionRepository;
     @Autowired
@@ -117,6 +121,10 @@ public class AuthServiceImpl implements AuthService{
             return false;
         }
 
+        CreateCartRequestDTO createCartRequestDTO = new CreateCartRequestDTO();
+        createCartRequestDTO.setUserId(savedUser.getId());
+        createCartRequestDTO.setCartName(savedUser.getName().concat("'s cart"));
+        productServiceClient.createNewCart(createCartRequestDTO);
         return true;
     }
 
@@ -136,6 +144,8 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public SessionStatus validate(String token,ValidateTokenRequestDTO validateTokenRequestDTO) throws InvalidTokenException {
+
+        //TODO: check for token expiry
 
         Claims claim = Jwts.parser().verifyWith(SIGNING_KEY).build().parseSignedClaims(token).getPayload();
         if(claim.isEmpty())
