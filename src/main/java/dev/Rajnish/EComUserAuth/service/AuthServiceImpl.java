@@ -1,6 +1,7 @@
 package dev.Rajnish.EComUserAuth.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,9 +56,50 @@ public class AuthServiceImpl implements AuthService{
     @Autowired
     private RoleService roleservice;
 
-      private static final String SECRET = "31ab4082a1fe8c1423395e658176fb45cdf7f697017fb739b6cca33c40d6045e";
-   private static final SecretKey SIGNING_KEY = Keys.hmacShaKeyFor(SECRET.getBytes()); 
+    private static final String SECRET = "31ab4082a1fe8c1423395e658176fb45cdf7f697017fb739b6cca33c40d6045e";
+    private static final SecretKey SIGNING_KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
 
+    @Override
+    public Boolean adminSignUp(SignUpRequestDTO signUpRequestDTO) {
+
+        User user = SignUpRequestDTO.createUser(signUpRequestDTO);
+        user.setPassword(bCryptPasswordEncoder.encode(signUpRequestDTO.getPassword()));
+        Set<Role> userRoles = new HashSet<>();
+        Role savedRole = roleservice.fetchByName("Admin");
+        userRoles.add(savedRole);
+        user.setUserRoles(userRoles);
+        User savedUser = userRepository.save(user);
+
+        if(savedUser==null)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public Boolean signUp(SignUpRequestDTO signUpRequestDTO) {
+
+        User user = SignUpRequestDTO.createUser(signUpRequestDTO);
+        user.setPassword(bCryptPasswordEncoder.encode(signUpRequestDTO.getPassword()));
+        Set<Role> userRoles = new HashSet<>();
+        Role savedRole = roleservice.fetchByName("User");
+        userRoles.add(savedRole);
+        user.setUserRoles(userRoles);
+        User savedUser = userRepository.save(user);
+
+        if(savedUser==null)
+        {
+            return false;
+        }
+
+        CreateCartRequestDTO createCartRequestDTO = new CreateCartRequestDTO();
+        createCartRequestDTO.setUserId(savedUser.getId());
+        createCartRequestDTO.setCartName(savedUser.getName().concat("'s cart"));
+        productServiceClient.createNewCart(createCartRequestDTO);
+        return true;
+    }
 
     @Override
     public ResponseEntity<UserResponseDTO> login(LoginRequestDTO loginRequestDTO) {
@@ -85,7 +127,15 @@ public class AuthServiceImpl implements AuthService{
                 savedUserSession.setToken(null);
                 sessionRepository.save(savedUserSession);
             }
-        }        
+        }
+        
+        Set<Role> savedUserRoles = savedUser.getUserRoles();
+        List<String> userRoles = new ArrayList<>();
+
+        for(Role savedUserRole: savedUserRoles)
+        {
+            userRoles.add(savedUserRole.getName());
+        }
 
         // String token = RandomTokenGeneration.generateRandomString(30);
         //Code for generating JWT token
@@ -93,7 +143,7 @@ public class AuthServiceImpl implements AuthService{
         
         Map<String,Object> jsonForJWT = new HashMap<>();
         jsonForJWT.put("userId", savedUser.getId());
-        jsonForJWT.put("roles",savedUser.getUserRoles());
+        jsonForJWT.put("roles",userRoles);
         jsonForJWT.put("createdAt",new Date());
         jsonForJWT.put("expiryAt", new Date(LocalDate.now().plusDays(2).toEpochDay()));
         String token = Jwts.builder().claims(jsonForJWT).signWith(SIGNING_KEY,alg).compact();
@@ -113,28 +163,6 @@ public class AuthServiceImpl implements AuthService{
         ResponseEntity<UserResponseDTO> response = new ResponseEntity<>(userResponseDTO,headers,HttpStatus.OK);
 
         return response;
-    }
-
-    @Override
-    public Boolean signUp(SignUpRequestDTO signUpRequestDTO) {
-
-        User user = SignUpRequestDTO.createUser(signUpRequestDTO);
-        user.setPassword(bCryptPasswordEncoder.encode(signUpRequestDTO.getPassword()));
-        Set<Role> userRoles = new HashSet<>();
-        Role savedRole = roleservice.fetchByName("User");
-        userRoles.add(savedRole);
-        User savedUser = userRepository.save(user);
-
-        if(savedUser==null)
-        {
-            return false;
-        }
-
-        CreateCartRequestDTO createCartRequestDTO = new CreateCartRequestDTO();
-        createCartRequestDTO.setUserId(savedUser.getId());
-        createCartRequestDTO.setCartName(savedUser.getName().concat("'s cart"));
-        productServiceClient.createNewCart(createCartRequestDTO);
-        return true;
     }
 
     @Override
@@ -163,16 +191,24 @@ public class AuthServiceImpl implements AuthService{
             throw new InvalidTokenException("Token is empty");
         }
 
-        UUID userId = validateTokenRequestDTO.getUserId();
-
+        // UUID userId = validateTokenRequestDTO.getUserId();
+        UUID userId = UUID.fromString(claim.get("userId",String.class));
         Optional<Session> sessionOptional = sessionRepository.findByTokenAndUser_Id(token, userId);
         if (sessionOptional.isEmpty() || sessionOptional.get().getSessionStatus().equals(SessionStatus.ENDED)) {
             throw new InvalidTokenException("token is invalid");
         }
 
-        String userRoles = claim.get("userRoles").toString();
+        // String[] userRoles = claim.get("userRoles",String.class).toString().split(",");
+        ArrayList<String> userRoles = claim.get("roles",ArrayList.class);
+        for(String userRole: userRoles)
+        {
+            if(userRole.equals(validateTokenRequestDTO.getRole()))
+            {
+                return true;
+            }
+        }
         System.out.println(userRoles);
 
-        return true;
-    }    
+        return false;
+    }      
 }

@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.Rajnish.EComUserAuth.dto.LoginRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.SetUserRolesDTO;
-import dev.Rajnish.EComUserAuth.dto.SignUpRequestDTO;
 import dev.Rajnish.EComUserAuth.dto.UserResponseDTO;
 import dev.Rajnish.EComUserAuth.service.interfaces.UserService;
 
@@ -37,28 +35,5 @@ public class UserController {
     {
         UserResponseDTO savedUser = userService.setUserRoles(userId, setUserRolesDTO.getRoleIds());
         return new ResponseEntity<>(savedUser,HttpStatus.OK);
-    }
-
-    // @PostMapping("/login")
-    // public ResponseEntity login(@RequestBody LoginRequestDTO loginRequestDTO)
-    // {
-    //     return null;
-    // }
-
-    // @GetMapping("/logout")
-    // public ResponseEntity logout(){
-    //     return null;
-    // }
-
-    // @PostMapping("/signup")
-    // public ResponseEntity singup(@RequestBody SignUpRequestDTO signUpRequestDTO)
-    // {
-    //     return null;
-    // }
-
-    // @GetMapping("/validate")
-    // public ResponseEntity validate()
-    // {
-    //     return null;
-    // }    
+    }  
 }

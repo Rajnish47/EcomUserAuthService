@@ -11,6 +11,7 @@ import dev.Rajnish.EComUserAuth.dto.ValidateTokenRequestDTO;
 
 public interface AuthService {
 
+    Boolean adminSignUp(SignUpRequestDTO signUpRequestDTO);
     ResponseEntity<UserResponseDTO> login(LoginRequestDTO loginRequestDTO);
     Boolean signUp(SignUpRequestDTO signUpRequestDTO);
     Boolean logout(UUID userId, String token);

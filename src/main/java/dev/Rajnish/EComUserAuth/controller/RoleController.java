@@ -25,6 +25,5 @@ public class RoleController {
     {
         RoleResponseDTO savedRole = roleService.createRole(roleName);
         return new ResponseEntity<>(savedRole,HttpStatus.OK);        
-    } 
-    
+    }    
 }

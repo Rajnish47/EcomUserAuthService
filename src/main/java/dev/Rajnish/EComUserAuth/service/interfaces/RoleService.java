@@ -6,5 +6,5 @@ import dev.Rajnish.EComUserAuth.entity.Role;
 public interface RoleService {
 
     RoleResponseDTO createRole(String name);
-    Role fetchByName(String roleName);    
+    Role fetchByName(String roleName);
 }

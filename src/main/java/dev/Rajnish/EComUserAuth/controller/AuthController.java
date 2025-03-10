@@ -25,6 +25,18 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @PostMapping("/signup/admin/sknuywbdcoiuwh")
+    public ResponseEntity<String> adminSignUp(@RequestBody SignUpRequestDTO signUpRequestDTO)
+    {
+        boolean op = authService.adminSignUp(signUpRequestDTO);
+        if(op==false)
+        {
+            return new ResponseEntity<>("Unable to create account",HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        return new ResponseEntity<>("Account created successfully",HttpStatus.OK);
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody SignUpRequestDTO signUpRequestDTO)
     {
@@ -50,10 +62,14 @@ public class AuthController {
         return new ResponseEntity<>("Logged out successfully",HttpStatus.OK);
     }
 
-    @GetMapping("/validate")
+    @PostMapping("/validate")
     public ResponseEntity<String> validate(@RequestHeader("Authorization") String token, @RequestBody ValidateTokenRequestDTO validateTokenRequestDTO)
     {
         boolean op = authService.validate(token,validateTokenRequestDTO);
-        return ResponseEntity.ok("");
+        if(op==false)
+        {
+            return new ResponseEntity<>("false",HttpStatus.OK);
+        }
+        return ResponseEntity.ok("true");
     }
 }

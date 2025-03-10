@@ -16,7 +16,7 @@ public class RoleResponseDTO {
     public static RoleResponseDTO createRoleResponseDTO(Role savedRole)
     {
         RoleResponseDTO roleResponseDTO = new RoleResponseDTO();
-        roleResponseDTO.setRole(savedRole.getRole());
+        roleResponseDTO.setRole(savedRole.getName());
         roleResponseDTO.setRoleId(savedRole.getId());
 
         return roleResponseDTO;
